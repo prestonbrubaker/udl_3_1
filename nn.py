@@ -28,7 +28,7 @@ for n in range(0, 10):
 
 
 def activation(x_inn):
-    mode = "sigmoid"
+    mode = "relu"
 
     if(mode == "relu"):
         if(x_inn < 0):
@@ -191,17 +191,17 @@ while True:
     for n in range(0, 10):
         if(random.uniform(0, 1) < 0.1):
             mut = 1 * random.uniform(-1, 1)
-            mag = 10 ** random.randint(-11, 3)
+            mag = 10 ** random.randint(-11, 2)
             weights_try[n] += mut * mag
 
-    if(weights_try[n] > 200):
-        weights_try[n] = 200
-    if(weights_try[n] < -200):
-        weights_try[n] = -200
+        if(weights_try[n] > 5):
+            weights_try[n] = 5
+        if(weights_try[n] < -5):
+            weights_try[n] = -5
 
     loss_try = gen_loss(weights_try)
 
-    if ( loss_try - random.uniform(0, loss * .001)<= loss):
+    if ( loss_try - random.uniform(0, loss * .000)<= loss):
         weights = []
         for n in range(0, 10):
             weights.append( weights_try[n] )
