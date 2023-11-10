@@ -28,11 +28,20 @@ for n in range(0, 10):
 
 
 def activation(x_inn):
+    mode = "sigmoid"
 
-    if(x_inn < 0):
-        output = 0
-    elif(x_inn >= 0):
-        output = x_inn
+    if(mode == "relu"):
+        if(x_inn < 0):
+            output = 0
+        elif(x_inn >= 0):
+            output = x_inn
+    elif(mode == "sigmoid"):
+        if(x_inn < -100):
+            output = 0
+        elif(x_inn > 100):
+            output = 1
+        else:
+            output = 1 / (1 + math.exp(-1 * x_inn))
     
     return output
 
@@ -179,17 +188,16 @@ while True:
     for n in range(0, 10):
         weights_try.append( weights[n] )
 
-    n = random.randint(0, 9)
+    for n in range(0, 10):
+        if(random.uniform(0, 1) < 0.1):
+            mut = 1 * random.uniform(-1, 1)
+            mag = 10 ** random.randint(-11, 3)
+            weights_try[n] += mut * mag
 
-    mut = 1 * random.uniform(-1, 1)
-    mag = 10 ** random.randint(-11, 1)
-
-    weights_try[n] += mut * mag
-
-    if(weights_try[n] > 20):
-        weights_try[n] = 20
-    if(weights_try[n] < -20):
-        weights_try[n] = -20
+    if(weights_try[n] > 200):
+        weights_try[n] = 200
+    if(weights_try[n] < -200):
+        weights_try[n] = -200
 
     loss_try = gen_loss(weights_try)
 
