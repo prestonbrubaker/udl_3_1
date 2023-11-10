@@ -15,20 +15,22 @@ itC = 0
 
 loss = 0
 
+num_params = 10
 
-for n in range(0, 10):
+
+for n in range(0, num_params + 1):
     weights.append(random.uniform(-1,1))
 
 
 weights_try = []
 
-for n in range(0, 10):
+for n in range(0, num_params + 1):
     weights_try.append(weights[n])
 
 
 
-def activation(x_inn):
-    mode = "relu"
+def activation(x_inn, weights_inn):
+    mode = "swish"
 
     if(mode == "relu"):
         if(x_inn < 0):
@@ -42,6 +44,8 @@ def activation(x_inn):
             output = 1
         else:
             output = 1 / (1 + math.exp(-1 * x_inn))
+    elif(mode == "swish"):
+        output = x_inn / (1 + math.exp(-weights_inn[10] * x_inn))
     
     return output
 
@@ -59,7 +63,7 @@ def nn_forward(x_in, weights_in):
 
     nodes [2] = 1
 
-    nodes[6] = weights_in[6] + weights_in[7] * activation(weights_in[0] + weights_in[3] * nodes[1]) + weights_in[8] * activation(weights_in[1] + weights_in[4] * nodes[1]) + weights_in[9] * activation(weights_in[2] + weights_in[5] * nodes[1])
+    nodes[6] = weights_in[6] + weights_in[7] * activation(weights_in[0] + weights_in[3] * nodes[1], weights_in) + weights_in[8] * activation(weights_in[1] + weights_in[4] * nodes[1], weights_in) + weights_in[9] * activation(weights_in[2] + weights_in[5] * nodes[1], weights_in)
     
     # Return output
     return nodes[6]
@@ -156,8 +160,8 @@ def display():
 
 def gen_loss(weights_in):
     loss = 0
-    for k in range(0, 200):
-        x = k / 200
+    for k in range(0, 100):
+        x = k / 100
         y = nn_forward(x, weights_in)
         y_desired = math.sin(x * math.pi)
         if(x < 0.5):
@@ -185,10 +189,10 @@ while True:
     #print(weights)
 
     weights_try = []
-    for n in range(0, 10):
+    for n in range(0, num_params + 1):
         weights_try.append( weights[n] )
 
-    for n in range(0, 10):
+    for n in range(0, num_params + 1):
         if(random.uniform(0, 1) < 0.1):
             mut = 1 * random.uniform(-1, 1)
             mag = 10 ** random.randint(-11, 2)
@@ -203,7 +207,7 @@ while True:
 
     if ( loss_try - random.uniform(0, loss * .000)<= loss):
         weights = []
-        for n in range(0, 10):
+        for n in range(0, num_params + 1):
             weights.append( weights_try[n] )
 
 
