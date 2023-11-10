@@ -63,15 +63,19 @@ def display():
     for k in range(0, 400):
         x = k / 400
         y = nn_forward(x, weights)
-        #y_desired = math.sin(x * math.pi)
-        y_desired = x
+        y_desired = math.sin(x * math.pi)
+        if(x < 0.5):
+            y_desired = 0
+        else:
+            y_desired = 1
         
         x_disp = x * 700
         y_disp = 700 * 4 / 5 - y * 700 / 2
         y_desired_disp = 700 * 4 / 5 - y_desired * 700 / 2
 
-        pygame.draw.rect(window, (255, 0, 0), (x_disp, y_disp, 2, 2))
+        
         pygame.draw.rect(window, (0, 255, 0), (x_disp, y_desired_disp, 2, 2))
+        pygame.draw.rect(window, (255, 0, 0), (x_disp, y_disp, 2, 2))
 
     # Draw brain
 
@@ -132,7 +136,7 @@ def display():
     for n in range(0, 3):
         for i in range(0, 3):
             window.blit(font.render(str(round(weights[n + 3 * i], 3)), True, (255, 255, 255)), (250 + n * 50, 600 + i * 20))
-    window.blit(font.render(str(round(weights[9])), True, (255, 255, 255)), (250, 600 + 3 * 20))
+    window.blit(font.render(str(round(weights[9], 3)), True, (255, 255, 255)), (250, 600 + 3 * 20))
 
     
     window.blit(font.render("Iteration: " + str(itC), True, (255, 255, 255)), (500, 600))
@@ -146,17 +150,23 @@ def gen_loss(weights_in):
     for k in range(0, 200):
         x = k / 200
         y = nn_forward(x, weights_in)
-        #y_desired = math.sin(x * math.pi)
-        y_desired = x
-        # Function = x ** 2
+        y_desired = math.sin(x * math.pi)
+        if(x < 0.5):
+            y_desired = 0
+        else:
+            y_desired = 1
         loss += ( y_desired - y ) ** 2
     
     return loss
 
-        
+
+
 while True:
 
     display()
+
+    if(itC == 0):
+        time.sleep(1)
 
     #time.sleep(1)
 
@@ -172,14 +182,14 @@ while True:
     n = random.randint(0, 9)
 
     mut = 1 * random.uniform(-1, 1)
-    mag = 10 ** random.randint(-11, -1)
+    mag = 10 ** random.randint(-11, 1)
 
     weights_try[n] += mut * mag
 
-    if(weights_try[n] > 1):
-        weights_try[n] = 1
-    if(weights_try[n] < 0):
-        weights_try[n] = 0
+    if(weights_try[n] > 20):
+        weights_try[n] = 20
+    if(weights_try[n] < -20):
+        weights_try[n] = -20
 
     loss_try = gen_loss(weights_try)
 
